@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"     integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">Premium</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="privileges.html">Privileges</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="users.html">Subscribers</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <nav>
+                  <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item">
+                      <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a>Privileges</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                      <a href="users.html">Musics</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                      <a>View Privilege</a>
+                    </li>
+                    <!-- <li class="breadcrumb-item active">
+                      Dat
+                    </li> -->
+                  </ol>
+                </nav>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card border-dark w-100">
+                  <div class="card-header">
+                    <a href="privileges.html"> < Back</a>
+                  </div>
+                  <div class="card-body">
+                    <h4 class="card-title"> Premium Information</h4>
+                    <div class="mb-3">
+                      <label for="title">Title</label>
+                      <input type="text" id="title" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="benefits">Benefits</label>
+                      <input type="text" id="benefits" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="price">Price</label>
+                      <input type="text" id="price" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="duration">Duration</label>
+                      <input type="text" id="duration" class="form-control">
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <button type="button" class="btn btn-danger float-end w-25 ms-3" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    <button type="button" class="btn btn-primary float-end w-25" id="save_btn">Update</button>
+        
+                    <!-- Modal -->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Premium?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            
+                            <div class="modal-body">
+                            
+                            <div class="alert alert-danger">
+                                Are you sure you want to delete this Premium?
+                            </div>
+        
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="confirm_delete_stud">Delete</button>
+                            </div>
+                            </form>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+
+                  </div>
+              </div>
+              <div class="col-md-8">
+                <h4 class="text-center">Current Subscribers</h4>
+                <hr>
+                <table class="table">
+                  <thead class="bg-dark text-white">
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Membership</th>
+                      <th>Purchase Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="subscriber"></tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function getPrivilege(id) {
+        fetch('http://localhost:8000/api/privileges/' + id)
+          .then(response=>{
+            if(response.status==200) {
+              response.json()
+                .then(data=>renderPrivilege(data))
+            }
+          })
+        }
+
+        function renderPrivilege(priv) {
+          
+            $("#title").val(priv.title)
+            $("#benefits").val(priv.benefits)
+            $("#price").val(priv.price)
+            $("#duration").val(priv.duration)
+
+            const tbody = $("#subscriber")
+
+            priv.users.forEach((u)=>{
+            const tr = $(document.createElement("tr"))
+            console.log(u)
+            tr.append("<td>" + u.id + "</td>")
+            tr.append("<td>" + u.name + "</td>")
+            tr.append("<td>" + u.membership + "</td>")
+            tr.append("<td>" + new Date(Date.parse(u.created_at)).toDateString() + "</td>")
+            
+            tbody.append(tr)
+            })
+        }
+      
+      $(document).ready(()=>{
+        const urlParams = new URLSearchParams(window.location.search);
+        const param_id = urlParams.get('id');
+        
+        getPrivilege(param_id)
+
+        $("#save_btn").click(()=>{
+            const data = {
+              "title":$("#title").val(),
+              "benefits":$("#benefits").val(),
+              "price":$("#price").val(),
+              "duration":$("#duration").val(),
+            }
+            fetch('http://localhost:8000/api/privileges/' + param_id,{
+              credentials: "omit",
+              method:"PUT",
+              body: JSON.stringify(data),
+              headers : {
+                "Accept":"application/json",
+                "Content-Type":"application/json"
+              }
+            })
+            .then(response=>{
+              if(response.status==200) {
+                alert("This privilege's information have been modified.")
+                window.location='privileges.html'
+              }
+            })
+          })
+  
+          $("#confirm_delete_stud").click(()=>{
+            fetch('http://localhost:8000/api/privileges/' + param_id,{
+              credentials:"omit",
+              method: "DELETE",
+              headers: {
+                'Accept':'application/json'
+              }
+            }).then(response=>{
+              if(response.status==200) {
+                alert('This privilege has been removed.')
+                window.location='privileges.html'
+              }
+            })
+        })
+      })
+    </script>
+</body>
+</html>

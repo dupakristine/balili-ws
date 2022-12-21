@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"     integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">Music List</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="musics.html">Music</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="composers.html">Composers</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <nav>
+                  <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item">
+                      <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a>Composers</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                      <a href="musics.html">Musics</a>
+                    </li>
+                    <!-- <li class="breadcrumb-item active">
+                      Dat
+                    </li> -->
+                  </ol>
+                </nav>
+              </div>
+                <div class="col-md-12 d-flex justify-content-between">
+                    <h2 class="float-start text-center bg-info rounded p-3 w-75">Composers</h2>
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addComposerModal">
+                      <i class="fa fa-plus"></i> Add Composer
+                    </button>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="addComposerModal" tabindex="-1" aria-labelledby="addComposerModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="createCustomerModalLabel">Add New Composer</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              
+                              <div class="mb-3">
+                                <label for="lname">Last Name</label>
+                                <input type="text" id="lname" class="form-control">
+                              </div>
+                    
+                              <div class="mb-3">
+                                <label for="fname">First Name</label>
+                                <input type="text" id="fname" class="form-control">
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="save_btn">Add Composer</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                </div>
+                <div class="col-md-12">
+                    
+                    <hr>
+                    <table class="table">
+                        <thead class="bg-dark text-white">
+                          <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Date Added</th>
+                            <th class="text-center">...</th>
+                          </tr>
+                        </thead>
+                        <tbody id="composers"></tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function getAllComposers() {
+        fetch("http://localhost:8000/api/composers")
+          .then(response=>{
+            if(response.status==200) {
+              response.json()
+                .then(data=>{
+                  renderComposers(data.composers)
+                })
+            }
+          })
+      }
+
+      function renderComposers(composers) {
+        const tbody = $("#composers")
+
+        composers.forEach((comp)=>{
+          const tr = $(document.createElement("tr"))
+
+          tr.append("<td>" + comp.id + "</td>")
+          tr.append("<td>" + comp.lname + ", " + comp.fname + "</td>")
+          tr.append("<td>" + new Date(Date.parse(comp.created_at)).toDateString() + "</td>")
+          tr.append("<td class='text-center'><a href='show_composer.html?id=" + comp.id + "' class='btn btn-sm btn-info'><i class='fa fa-eye'></i></a>")
+          
+          tbody.append(tr)
+        })
+        }
+
+      function prependComposer(comp) {
+        const tbody = $("#composers")
+        console.log(comp)
+        const tr = $(document.createElement("tr"))
+        
+        tr.append("<td class='text-bg-info'>" + comp.id + "</td>")
+        tr.append("<td class='text-bg-info'>" + comp.lname + ", " + comp.fname + "</td>")
+        tr.append("<td class='text-bg-info'>" + new Date(Date.parse(comp.created_at)).toLocaleDateString() + "</td>")
+        tr.append("<td class='text-center text-bg-info'><a href='show_composer.html?id=" + comp.id + "' class='btn btn-sm btn-info'><i class='fa fa-eye'></i></a>")
+        
+        tbody.prepend(tr)
+      }
+      function clearForm() {
+        $("#lname").val(null)
+        $("#fname").val(null)
+      }
+
+      $(document).ready(()=>{
+        getAllComposers()
+
+        $("#save_btn").click(()=>{
+            const data = {
+                "lname":$("#lname").val(),
+                "fname":$("#fname").val(),
+            }
+
+            fetch("http://localhost:8000/api/composers",{
+                credentials: "omit",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+                }
+            }).then(response=>{
+                if(response.status==200) {
+                response.json()
+                    .then(data=>prependComposer(data))
+                }
+            })
+
+            clearForm()
+            $("#addComposerModal").modal('hide')
+          })
+      })
+    </script>
+</body>
+</html>

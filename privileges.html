@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"     integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">Premium</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="privileges.html">Privileges</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="users.html">Subscribers</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <nav>
+                  <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item">
+                      <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a>Privileges</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                      <a href="users.html">Subscribers</a>
+                    </li>
+                    <!-- <li class="breadcrumb-item active">
+                      Dat
+                    </li> -->
+                  </ol>
+                </nav>
+              </div>
+                <div class="col-md-12 d-flex justify-content-between">
+                    <h2 class="float-start text-center text-uppercase bg-secondary rounded p-3 w-75">Premium List</h2>
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addPrivilegeModal">
+                      <i class="fa fa-plus"></i> Add Privilege
+                    </button>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="addPrivilegeModal" tabindex="-1" aria-labelledby="addPrivilegeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="createCustomerModalLabel">Add New Privilege</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              
+                              <div class="mb-3">
+                                <label for="title">Title</label>
+                                <input type="text" id="title" class="form-control">
+                              </div>
+
+                              <div class="mb-3">
+                                <label for="benefits">Benefits</label>
+                                <input type="text" id="benefits" class="form-control">
+                              </div>
+                              
+                              <div class="mb-3">
+                                <label for="price">Price</label>
+                                <input type="number" id="price" class="form-control">
+                              </div>
+                              <div class="mb-3">
+                                <label for="duration">Duration</label>
+                                <input type="number" id="duration" class="form-control">
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="save_btn">Add Privilege</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                </div>
+                <div class="col-md-12">
+                    
+                    <hr>
+                    <table class="table">
+                        <thead class="bg-dark text-white">
+                          <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Benefits</th>
+                            <th>Price</th>
+                            <th>Duration</th>
+                            <th class="text-center">...</th>
+                          </tr>
+                        </thead>
+                        <tbody id="privileges"></tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getPrivileges() {
+        fetch("http://localhost:8000/api/privileges")
+          .then(response=>{
+            if(response.status==200) {
+              response.json()
+                .then(data=>{
+                  renderPrivileges(data.privileges)
+                })
+            }
+          })
+      }
+
+      function renderPrivileges(privileges) {
+        const tbody = $("#privileges")
+
+        privileges.forEach((priv)=>{
+          const tr = $(document.createElement("tr"))
+
+          tr.append("<td>" + priv.id + "</td>")
+          tr.append("<td>" + priv.title + "</td>")
+          tr.append("<td>" + priv.benefits + "</td>")
+          tr.append("<td>" + priv.price + "</td>")
+          tr.append("<td>" + priv.duration + "</td>")
+          tr.append("<td class='text-center'><a href='show_privilege.html?id=" + priv.id + "' class='btn btn-sm btn-info'><i class='fa fa-eye'></i></a>")
+          
+          tbody.append(tr)
+        })
+        }
+
+        function prependPrivilege(priv) {
+            const tbody = $("#privileges")
+            console.log(priv)
+            const tr = $(document.createElement("tr"))
+            
+            tr.append("<td class='text-bg-info'>" + priv.id + "</td>")
+            tr.append("<td class='text-bg-info'>" + priv.title + "</td>")
+            tr.append("<td class='text-bg-info'>" + priv.benefits + "</td>")
+            tr.append("<td class='text-bg-info'>" + priv.price + "</td>")
+            tr.append("<td class='text-bg-info'>" + priv.duration + "</td>")
+            tr.append("<td class='text-center text-bg-info'><a href='show_privilege.html?id=" + priv.id + "' class='btn btn-sm btn-info'><i class='fa fa-eye'></i></a>")
+            
+            tbody.prepend(tr)
+        }
+
+        function clearForm() {
+        $("#title").val(null)
+        $("#benefits").val(null)
+        $("#price").val(null)
+        $("#duration").val(null)
+      }
+
+        $(document).ready(()=>{
+            getPrivileges()
+
+            $("#save_btn").click(()=>{
+            const data = {
+                "title":$("#title").val(),
+                "benefits":$("#benefits").val(),
+                "price":$("#price").val(),
+                "duration":$("#duration").val(),
+            }
+
+            fetch("http://localhost:8000/api/privileges",{
+                credentials: "omit",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+                }
+            }).then(response=>{
+                if(response.status==200) {
+                response.json()
+                    .then(data=>prependPrivilege(data))
+                }
+            })
+
+            clearForm()
+            $("#addPrivilegeModal").modal('hide')
+          })
+        })
+    </script>
+</body>
+</html>

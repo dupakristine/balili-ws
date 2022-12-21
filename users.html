@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"     integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">Premium</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="privileges.html">Privileges</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="users.html">Users</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <nav>
+                  <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item">
+                      <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a href="privileges.html">Privileges</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a>Subscribers</a>
+                    </li>
+                    <!-- <li class="breadcrumb-item">
+                      <a>View Accounts</a>
+                    </li> -->
+                    <!-- <li class="breadcrumb-item active">
+                      Dat
+                    </li> -->
+                  </ol>
+                </nav>
+              </div>
+                <div class="col-md-12 d-flex justify-content-between">
+                    <h2 class="float-start text-center bg-warning rounded p-3 w-75">LIST OF ALL SUBSCRIBERS</h2>
+                    <button type="button" class="btn btn-primary float-end mb-2" data-bs-toggle="modal" data-bs-target="#addSubscriberModal">
+                      <i class="fa fa-plus"></i> Add Subscriber
+                    </button>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="addSubscriberModal" tabindex="-1" aria-labelledby="addSubscriberModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="createCustomerModalLabel">Add New Subscriber</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              
+                              <div class="mb-3">
+                                <label for="priv_id">Premium #</label>
+                                <input type="number" id="priv_id" class="form-control" placeholder="Refer to privileges page">
+                              </div>
+                    
+                              <div class="mb-3">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" class="form-control">
+                              </div>
+                    
+                              <div class="mb-3">
+                                <label for="membership">Membership</label>
+                                <input type="text" id="membership" class="form-control">
+                              </div>
+                
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="save_btn">Add Music</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                </div>
+                <div class="col-md-12">
+                    <hr>
+                    <table class="table">
+                        <thead class="bg-dark text-white">
+                          <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Membership</th>
+                            <th>Subscription #</th>
+                            <th>Joined On</th>
+                            <th class="text-center">...</th>
+                          </tr>
+                        </thead>
+                        <tbody id="users"></tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function getAllUsers() {
+        fetch("http://localhost:8000/api/users")
+          .then(response=>{
+            if(response.status==200) {
+              response.json()
+                .then(data=>{
+                  renderUsers(data.users)
+                })
+            }
+          })
+      }
+
+      function renderUsers(users) {
+        const tbody = $("#users")
+
+        // console.log(users)
+        users.forEach((ms)=>{
+          const tr = $(document.createElement("tr"))
+          tr.append("<td>" + ms.id + "</td>")
+          tr.append("<td>" + ms.name + "</td>")
+          tr.append("<td>" + ms.membership + "</td>")
+          tr.append("<td >" + ms.priv_id + "</td>")
+          tr.append("<td>" + new Date(Date.parse(ms.created_at)).toLocaleDateString() + "</td>")
+          tr.append("<td class='text-center'><a href='show_user.html?id=" + ms.id + "' class='btn btn-sm btn-info'><i class='fa fa-eye'></i></a>")
+          
+          tbody.append(tr)
+        })
+        }
+
+      function clearForm() {
+        $("#priv_id").val(null)
+        $("#name").val(null)
+        $("#membership").val(null)
+      }
+
+      $(document).ready(()=>{
+        getAllUsers()
+
+        $("#save_btn").click(()=>{
+            const data = {
+                "priv_id":$("#priv_id").val(),
+                "name":$("#name").val(),
+                "membership":$("#membership").val()
+            }
+
+            fetch("http://localhost:8000/api/users",{
+                credentials: "omit",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+                }
+            }).then(response=>{
+                if(response.status==200) {
+                alert('Successfully added a new subscriber')
+                window.location='users.html'
+                }
+            })
+
+            clearForm()
+            $("#addSubscriberModal").modal('hide')
+          })
+      })
+    </script>
+</body>
+</html>
